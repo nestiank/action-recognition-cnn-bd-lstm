@@ -98,7 +98,7 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
     if done_epochs > 0:
         checkpoint = torch.load(base_path + '/lstm_epoch' + str(done_epochs) + '.ckpt', map_location=device)
         model.load_state_dict(checkpoint)
-        with open(base_path + 'history.pickle', 'rb') as fr:
+        with open(base_path + '/history.pickle', 'rb') as fr:
             history = pickle.load(fr)
     else:
         history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
@@ -257,7 +257,7 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
 
     plt.savefig(base_path + '/result' + time.strftime('_%Y%m%d_%H%M%S', time.localtime(time.time())) + '.png')
 
-    with open(pickle_path + 'history.pickle','wb') as fw:
+    with open(pickle_path + '/history.pickle','wb') as fw:
         pickle.dump(history, fw)
 
 if __name__ == '__main__':
