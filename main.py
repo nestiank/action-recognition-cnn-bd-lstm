@@ -70,7 +70,7 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
     dataset_len = len(dataset_train)
     train_len = math.floor(dataset_len * 0.75)
     val_len = dataset_len - train_len
-    dataset_train, dataset_val, _ = random_split(dataset_train, [train_len, val_len])
+    dataset_train, dataset_val = random_split(dataset_train, [train_len, val_len])
 
     # Loading dataset
     loader_train  = torch.utils.data.DataLoader(dataset=dataset_train,
