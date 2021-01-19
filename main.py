@@ -161,38 +161,40 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
         print('Train accuracy: {} %'.format(train_acc))
 
         # Validation
-        val_loss = 0
-        correct = 0
-        total = 0
+        model.eval()
+        with torch.no_grad():
+            val_loss = 0
+            correct = 0
+            total = 0
 
-        for batch_index, (videos, audios, labels) in enumerate(loader_val):
-            # videos.shape = torch.Size([batch_size, frames_per_clip, 3, 112, 112])
-            # labels.shape = torch.Size([batch_size])
+            for batch_index, (videos, audios, labels) in enumerate(loader_val):
+                # videos.shape = torch.Size([batch_size, frames_per_clip, 3, 112, 112])
+                # labels.shape = torch.Size([batch_size])
 
-            videos = videos.permute(0, 2, 1, 3, 4)
-            # videos.shape = torch.Size([batch_size, 3, frames_per_clip, 112, 112])
+                videos = videos.permute(0, 2, 1, 3, 4)
+                # videos.shape = torch.Size([batch_size, 3, frames_per_clip, 112, 112])
 
-            videos = videos.to(device)
-            labels = labels.to(device)
+                videos = videos.to(device)
+                labels = labels.to(device)
 
-            outputs = model(videos)
-            loss = criterion(outputs, labels)
+                outputs = model(videos)
+                loss = criterion(outputs, labels)
 
-            # Validation loss
-            val_loss += loss.item()
+                # Validation loss
+                val_loss += loss.item()
 
-            # Validation accuracy
-            value, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+                # Validation accuracy
+                value, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
 
-        val_acc = 100 * correct / total
+            val_acc = 100 * correct / total
 
-        history['val_loss'].append(val_loss)
-        history['val_acc'].append(val_acc)
+            history['val_loss'].append(val_loss)
+            history['val_acc'].append(val_acc)
 
-        print('Validation: Epoch [{}/{}] Loss: {:.4f}'.format(epoch + 1, done_epochs + train_epochs, val_loss))
-        print('Validation accuracy: {} %'.format(val_acc))
+            print('Validation: Epoch [{}/{}] Loss: {:.4f}'.format(epoch + 1, done_epochs + train_epochs, val_loss))
+            print('Validation accuracy: {} %'.format(val_acc))
 
         # Decay learning rate
         if (epoch + 1) % 20 == 0:
@@ -202,7 +204,7 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
         # Save checkpoint
         torch.save(model.state_dict(), base_path + '/lstm_epoch' + str(epoch + 1) + '.ckpt')
 
-    # Evaluation
+    # Test
     print('Test: evaluation start @ {}'.format(time.strftime('%c', time.localtime(time.time()))))
 
     model.eval()
