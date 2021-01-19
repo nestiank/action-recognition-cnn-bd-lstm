@@ -70,6 +70,7 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
     dataset_len = len(dataset_train)
     train_len = math.floor(dataset_len * 0.75)
     val_len = dataset_len - train_len
+    ratio = train_len / val_len
     dataset_train, dataset_val = random_split(dataset_train, [train_len, val_len])
 
     # Loading dataset
@@ -189,7 +190,7 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
 
             val_acc = 100 * correct / total
 
-            history['val_loss'].append(val_loss)
+            history['val_loss'].append(val_loss * ratio)
             history['val_acc'].append(val_acc)
 
             print('Validation: Epoch [{}/{}] Loss: {:.4f}'.format(epoch + 1, done_epochs + train_epochs, val_loss))
@@ -235,8 +236,8 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
         pickle.dump(history, fw)
 
     plt.subplot(2, 1, 1)
-    plt.plot(range(1, epoch + 2), history['train_loss'], label='Train loss', color='red', linestyle='dashed')
-    plt.plot(range(1, epoch + 2), history['val_loss'], label='Validation loss', color='blue')
+    plt.plot(range(1, epoch + 2), history['train_loss'], label='Train', color='red', linestyle='dashed')
+    plt.plot(range(1, epoch + 2), history['val_loss'], label='Validation(Rescaled)', color='blue')
 
     plt.title('Loss history')
     plt.xlabel('Epoch')
@@ -244,8 +245,8 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
     plt.legend()
 
     plt.subplot(2, 1, 2)
-    plt.plot(range(1, epoch + 2), history['train_acc'], label='Train accuracy', color='red', linestyle='dashed')
-    plt.plot(range(1, epoch + 2), history['val_acc'], label='Validation accuracy', color='blue')
+    plt.plot(range(1, epoch + 2), history['train_acc'], label='Train', color='red', linestyle='dashed')
+    plt.plot(range(1, epoch + 2), history['val_acc'], label='Validation', color='blue')
 
     plt.title('Accuracy history')
     plt.xlabel('Epoch')
