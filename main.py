@@ -88,17 +88,17 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
     # Preparing checkpoint location
     if colab:
         base_path = '/content/drive/MyDrive/checkpoints'
-        pickle_path = '/content/drive/MyDrive/results'
+        result_path = '/content/drive/MyDrive/results'
     else:
         base_path = './checkpoints'
-        pickle_path = './results'
+        result_path = './results'
 
     # Loading model
     model = LSTM_with_CNN().to(device)
     if done_epochs > 0:
         checkpoint = torch.load(base_path + '/lstm_epoch' + str(done_epochs) + '.ckpt', map_location=device)
         model.load_state_dict(checkpoint)
-        with open(base_path + '/history.pickle', 'rb') as fr:
+        with open(result_path + '/history.pickle', 'rb') as fr:
             history = pickle.load(fr)
     else:
         history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
@@ -232,33 +232,29 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
 
     print('Finished training @ {}'.format(time.strftime('%c', time.localtime(time.time()))))
 
+    with open(result_path + '/history.pickle','wb') as fw:
+        pickle.dump(history, fw)
+
     plt.subplot(2, 1, 1)
-    plt.plot(range(epoch + 1), history['train_loss'], label='Train loss', color='red')
-    plt.plot(range(epoch + 1), history['val_loss'], label='Validation loss', color='blue')
+    plt.plot(range(1, epoch + 2), history['train_loss'], label='Train loss', color='red', linestyle='dashed')
+    plt.plot(range(1, epoch + 2), history['val_loss'], label='Validation loss', color='blue')
 
     plt.title('Loss history')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
+    plt.legend()
 
     plt.subplot(2, 1, 2)
-    plt.plot(range(epoch + 1), history['train_acc'], label='Train accuracy', color='red')
-    plt.plot(range(epoch + 1), history['val_acc'], label='Validation accuracy', color='blue')
+    plt.plot(range(1, epoch + 2), history['train_acc'], label='Train accuracy', color='red', linestyle='dashed')
+    plt.plot(range(1, epoch + 2), history['val_acc'], label='Validation accuracy', color='blue')
 
     plt.title('Accuracy history')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
+    plt.legend()
 
-    plt.subplots(constrained_layout=True)
-
-    if colab:
-        base_path = '/content/drive/MyDrive/results'
-    else:
-        base_path = './results'
-
-    plt.savefig(base_path + '/result' + time.strftime('_%Y%m%d_%H%M%S', time.localtime(time.time())) + '.png')
-
-    with open(pickle_path + '/history.pickle','wb') as fw:
-        pickle.dump(history, fw)
+    plt.tight_layout()
+    plt.savefig(result_path + '/result' + time.strftime('_%Y%m%d_%H%M%S', time.localtime(time.time())) + '.png')
 
 if __name__ == '__main__':
     # Set True when using Google Colab
