@@ -110,7 +110,6 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
 
     # Training the model
     total_steps = len(loader_train)
-    history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 
     for epoch in range(done_epochs, done_epochs + train_epochs):
         print('Train: Epoch {} start @ {}'.format(epoch + 1, time.strftime('%c', time.localtime(time.time()))))
