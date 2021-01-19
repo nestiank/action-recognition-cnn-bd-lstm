@@ -18,6 +18,7 @@ from torch.utils.data.dataset import random_split
 import time
 import matplotlib.pyplot as plt
 import math
+import pickle
 
 from dataset import prepare_dataset
 from dataset import ToFloatTensorInZeroOne
@@ -87,14 +88,20 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
     # Preparing checkpoint location
     if colab:
         base_path = '/content/drive/MyDrive/checkpoints'
+        pickle_path = '/content/drive/MyDrive/results'
     else:
         base_path = './checkpoints'
+        pickle_path = './results'
 
     # Loading model
     model = LSTM_with_CNN().to(device)
     if done_epochs > 0:
         checkpoint = torch.load(base_path + '/lstm_epoch' + str(done_epochs) + '.ckpt', map_location=device)
         model.load_state_dict(checkpoint)
+        with open(base_path + 'history.pickle', 'rb') as fr:
+            history = pickle.load(fr)
+    else:
+        history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 
     # Hyperparameters
     learning_rate = 0.001
@@ -247,6 +254,9 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
         base_path = './results'
 
     plt.savefig(base_path + '/result' + time.strftime('_%Y%m%d_%H%M%S', time.localtime(time.time())) + '.png')
+
+    with open(pickle_path + 'history.pickle','wb') as fw:
+        pickle.dump(history, fw)
 
 if __name__ == '__main__':
     # Set True when using Google Colab
