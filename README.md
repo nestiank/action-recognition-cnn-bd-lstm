@@ -15,7 +15,7 @@ This implementation is rough. Although this model should work for video action r
 
 ### Paper citation
 
-> A. Ullah, J. Ahmad, K. Muhammad, M. Sajjad and S. W. Baik, "Action Recognition in Video Sequences using Deep Bi-Directional LSTM With CNN Features," in IEEE Access, vol. 6, pp. 1155-1166, 2018, doi: 10.1109/ACCESS.2017.2778011.
+> Amin Ullah, Jamil Ahmad, Khan Muhammad, Muhammad Sajjad, and Sung Wook Baik. "Action recognition in video sequences using deep bi-directional LSTM with CNN features." IEEE Access 6 (2017): 1155-1166. doi: 10.1109/ACCESS.2017.2778011.
 
 ### More accurate implementation
 
