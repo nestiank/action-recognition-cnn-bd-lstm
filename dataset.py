@@ -36,7 +36,7 @@ def prepare_dataset(colab):
         results_path = '/content/drive/MyDrive/results'
     else:
         base_path = './dataset'
-        checkpoint_path = './checkpoints'
+        checkpoints_path = './checkpoints'
         results_path = './results'
 
     if not os.path.isdir(base_path):
