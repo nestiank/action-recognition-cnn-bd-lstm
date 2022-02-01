@@ -94,20 +94,22 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
         base_path = './checkpoints'
         result_path = './results'
 
-    # Loading model
+    # Model & hyperparameters
     model = LSTM_with_CNN().to(device)
+
+    learning_rate = 0.001
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    # Loading model
     if done_epochs > 0:
         checkpoint = torch.load(base_path + '/lstm_epoch' + str(done_epochs) + '.ckpt', map_location=device)
-        model.load_state_dict(checkpoint)
+        model.load_state_dict(checkpoint['model'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
         with open(result_path + '/history.pickle', 'rb') as fr:
             history = pickle.load(fr)
     else:
         history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
-
-    # Hyperparameters
-    learning_rate = 0.001
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     # Training the model
     total_steps = len(loader_train)
@@ -202,7 +204,8 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
             update_learning_rate(optimizer, learning_rate)
 
         # Save checkpoint
-        torch.save(model.state_dict(), base_path + '/lstm_epoch' + str(epoch + 1) + '.ckpt')
+        checkpoint = {'model': model.state_dict(), 'optimizer': optimizer.state_dict()}
+        torch.save(checkpoint, base_path + '/lstm_epoch' + str(epoch + 1) + '.ckpt')
 
     # Test
     print('Test: evaluation start @ {}'.format(time.strftime('%c', time.localtime(time.time()))))
@@ -234,6 +237,10 @@ def train_and_eval(colab, batch_size, done_epochs, train_epochs):
 
     with open(result_path + '/history.pickle','wb') as fw:
         pickle.dump(history, fw)
+
+    # Statistics
+    if train_epochs == 0:
+        epoch = done_epochs - 1
 
     plt.subplot(2, 1, 1)
     plt.plot(range(1, epoch + 2), history['train_loss'], label='Train', color='red', linestyle='dashed')
