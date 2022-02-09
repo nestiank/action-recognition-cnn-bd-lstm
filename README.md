@@ -1,4 +1,4 @@
-# Video Action Recognition with Pytorch
+# Video Action Recognition with PyTorch
 
 ![language-python][language-python]
 <br>
@@ -7,7 +7,7 @@
 [![institution-korea-university][korea-university-image]][korea-university-cs-url]
 ![project-urp][project-urp]
 
-> Rough pytorch implementation of "Action Recognition in Video Sequences using Deep Bi-directional LSTM with CNN Features"
+> Rough PyTorch implementation of "Action Recognition in Video Sequences using Deep Bi-directional LSTM with CNN Features" (Amin Ullah, et al.)
 
 ### Disclaimer
 
