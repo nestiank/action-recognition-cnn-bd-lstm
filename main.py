@@ -284,7 +284,9 @@ def train_and_eval(colab: bool, batch_size: int, done_epochs: int, train_epochs:
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
-    print('Test | Accuracy: {:.4f}%'.format(100 * correct / total))
+        test_acc = 100 * correct / total
+
+    print('Test | Accuracy: {:.4f}%'.format(test_acc))
     print(f"Test | Finished evaluation @ {get_time()}", flush=True)
 
     ######## Learning Statistics ########
